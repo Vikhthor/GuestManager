@@ -16,4 +16,14 @@ class Guests(Document):
 		if self.expected_departure_time:
 			if self.expected_arrival_time > self.expected_departure_time:
 				frappe.throw('Arrival time should not be later than departure time')
+			if self.expected_arrival_time == self.expected_departure_time:
+				frappe.throw('Arrival time should not be same as departure time')
+	def on_submit(self):
+		visit = frappe.new_doc('Visits')
+		visit.resident = frappe.db.get_single_value('Resident','full_name')
+		visit.address = frappe.db.get_single_value('Resident','address')
+		visit.guest = self.full_name
+		visit.expected_arrival = self.expected_arrival_time
+		visit.expected_departure = self.expected_departure_time
+		visit.insert()
 	# pass
