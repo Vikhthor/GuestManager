@@ -1,0 +1,101 @@
+{
+ "actions": [],
+ "autoname": "field:full_name",
+ "creation": "2021-02-15 18:07:22.883011",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "guest_first_name",
+  "guest_last_name",
+  "full_name",
+  "guest_phone_number",
+  "guest_email",
+  "expected_arrival_time",
+  "expected_departure_time",
+  "address",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "full_name",
+   "fieldtype": "Data",
+   "label": "Full name",
+   "read_only": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "expected_arrival_time",
+   "fieldtype": "Datetime",
+   "label": "Expected arrival time",
+   "reqd": 1
+  },
+  {
+   "fieldname": "expected_departure_time",
+   "fieldtype": "Datetime",
+   "label": "Expected departure time"
+  },
+  {
+   "fieldname": "address",
+   "fieldtype": "Data",
+   "label": "Address",
+   "read_only": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Guests",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "guest_first_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "First name",
+   "reqd": 1
+  },
+  {
+   "fieldname": "guest_last_name",
+   "fieldtype": "Data",
+   "label": "Last name"
+  },
+  {
+   "fieldname": "guest_phone_number",
+   "fieldtype": "Data",
+   "label": "Phone number"
+  },
+  {
+   "fieldname": "guest_email",
+   "fieldtype": "Data",
+   "label": "Email"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2021-02-15 18:52:21.237215",
+ "modified_by": "Administrator",
+ "module": "Guest Manager",
+ "name": "Guests",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}
