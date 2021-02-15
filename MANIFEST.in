@@ -1,0 +1,18 @@
+include MANIFEST.in
+include requirements.txt
+include *.json
+include *.md
+include *.py
+include *.txt
+recursive-include guest_manager *.css
+recursive-include guest_manager *.csv
+recursive-include guest_manager *.html
+recursive-include guest_manager *.ico
+recursive-include guest_manager *.js
+recursive-include guest_manager *.json
+recursive-include guest_manager *.md
+recursive-include guest_manager *.png
+recursive-include guest_manager *.py
+recursive-include guest_manager *.svg
+recursive-include guest_manager *.txt
+recursive-exclude guest_manager *.pyc
