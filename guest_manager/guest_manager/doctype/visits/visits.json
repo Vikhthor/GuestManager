@@ -46,6 +46,7 @@
    "read_only": 1
   },
   {
+   "default": "Pending",
    "fieldname": "status",
    "fieldtype": "Select",
    "label": "Status",
@@ -54,7 +55,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2021-02-17 10:04:27.002232",
+ "modified": "2021-02-18 14:40:06.478440",
  "modified_by": "Administrator",
  "module": "Guest Manager",
  "name": "Visits",
