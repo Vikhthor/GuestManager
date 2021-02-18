@@ -6,6 +6,8 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "resident",
+  "title",
   "guest_first_name",
   "guest_last_name",
   "full_name",
@@ -36,6 +38,7 @@
    "label": "Expected departure time"
   },
   {
+   "fetch_from": "resident.address",
    "fieldname": "address",
    "fieldtype": "Data",
    "label": "Address",
@@ -71,12 +74,26 @@
    "fieldname": "guest_email",
    "fieldtype": "Data",
    "label": "Email"
+  },
+  {
+   "fieldname": "title",
+   "fieldtype": "Select",
+   "label": "Title",
+   "options": "Mr\nMrs"
+  },
+  {
+   "fetch_from": "resident.full_name",
+   "fieldname": "resident",
+   "fieldtype": "Link",
+   "label": "Resident",
+   "options": "Resident",
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2021-02-15 19:40:48.022191",
+ "modified": "2021-02-17 10:02:10.049382",
  "modified_by": "Administrator",
  "module": "Guest Manager",
  "name": "Guests",
@@ -87,11 +104,27 @@
    "delete": 1,
    "email": 1,
    "export": 1,
+   "if_owner": 1,
    "print": 1,
    "read": 1,
    "report": 1,
    "role": "System Manager",
    "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "if_owner": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Resident",
+   "share": 1,
+   "submit": 1,
    "write": 1
   }
  ],
