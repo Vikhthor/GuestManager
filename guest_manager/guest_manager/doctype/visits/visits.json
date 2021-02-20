@@ -1,6 +1,7 @@
 {
+ "_comments": "[{\"comment\": \"<div class=\\\"ql-editor read-mode\\\"><p>Hi</p></div>\", \"by\": \"admin@example.com\", \"name\": \"00feda595f\"}]",
  "actions": [],
- "autoname": "format:{resident}-{DD}/{MM}/{YY}",
+ "autoname": "format:{resident}-{DD}/{MM}/{YY}-{#}",
  "creation": "2021-02-15 19:47:06.757400",
  "doctype": "DocType",
  "editable_grid": 1,
@@ -55,7 +56,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2021-02-18 14:40:06.478440",
+ "modified": "2021-02-19 08:58:39.765736",
  "modified_by": "Administrator",
  "module": "Guest Manager",
  "name": "Visits",

@@ -1,6 +1,6 @@
 {
  "actions": [],
- "autoname": "format:{full_name}-{#}",
+ "autoname": "format:{######}",
  "creation": "2021-02-15 18:07:22.883011",
  "doctype": "DocType",
  "editable_grid": 1,
@@ -16,7 +16,8 @@
   "expected_arrival_time",
   "expected_departure_time",
   "address",
-  "amended_from"
+  "amended_from",
+  "status"
  ],
  "fields": [
   {
@@ -88,12 +89,20 @@
    "label": "Resident",
    "options": "Resident",
    "reqd": 1
+  },
+  {
+   "default": "Pending Invite",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Pending Invite\nInvite Sent",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2021-02-17 10:02:10.049382",
+ "modified": "2021-02-19 13:23:42.107633",
  "modified_by": "Administrator",
  "module": "Guest Manager",
  "name": "Guests",
