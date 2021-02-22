@@ -1,7 +1,7 @@
 {
  "attach_print": 0,
  "channel": "Email",
- "creation": "2021-02-22 08:28:37.787139",
+ "creation": "2021-02-20 11:41:24.076343",
  "days_in_advance": 0,
  "docstatus": 0,
  "doctype": "Notification",
@@ -10,11 +10,11 @@
  "event": "Save",
  "idx": 0,
  "is_standard": 1,
- "message": "*Guest invite*\n\n{{ doc.title }} {{ doc.full_name }} is expecting at {% if doc.title == \"Mr\" %} his {% endif %} {% if doc.title == \"Mgfngnrs\" %} her {% endif %}\nresidence in the estate at {{ doc.address }}. Please she expects to arrive at about {{ doc.expected_arrival_time }}.\n\nDo well to present this SMS at the estate entrance to get security clearance. Thank you.",
- "modified": "2021-02-22 08:30:52.684637",
+ "message": "<p>{{ doc.title }} {{ doc.full_name }}</p>",
+ "modified": "2021-02-22 08:28:49.956495",
  "modified_by": "Administrator",
  "module": "Guest Manager",
- "name": "Guest Invite",
+ "name": "Invite",
  "owner": "Administrator",
  "property_value": "Invite Sent",
  "recipients": [
@@ -23,7 +23,7 @@
   }
  ],
  "send_system_notification": 1,
- "send_to_all_assignees": 0,
+ "send_to_all_assignees": 1,
  "sender": "Notifications",
  "sender_email": "victormaduforo@gmail.com",
  "set_property_after_alert": "status",

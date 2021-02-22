@@ -12,7 +12,7 @@
   "guest_last_name",
   "full_name",
   "guest_phone_number",
-  "guest_email",
+  "email",
   "expected_arrival_time",
   "expected_departure_time",
   "address",
@@ -72,11 +72,6 @@
    "label": "Phone number"
   },
   {
-   "fieldname": "guest_email",
-   "fieldtype": "Data",
-   "label": "Email"
-  },
-  {
    "fieldname": "title",
    "fieldtype": "Select",
    "label": "Title",
@@ -91,18 +86,22 @@
    "reqd": 1
   },
   {
-   "default": "Pending Invite",
+   "fieldname": "email",
+   "fieldtype": "Data",
+   "label": "Email",
+   "options": "Email",
+   "reqd": 1
+  },
+  {
    "fieldname": "status",
    "fieldtype": "Select",
    "label": "Status",
-   "options": "Pending Invite\nInvite Sent",
-   "read_only": 1
+   "options": "Pending Invite\nInvite Sent"
   }
  ],
  "index_web_pages_for_search": 1,
- "is_submittable": 1,
  "links": [],
- "modified": "2021-02-19 13:23:42.107633",
+ "modified": "2021-02-21 13:12:32.895401",
  "modified_by": "Administrator",
  "module": "Guest Manager",
  "name": "Guests",
@@ -119,7 +118,6 @@
    "report": 1,
    "role": "System Manager",
    "share": 1,
-   "submit": 1,
    "write": 1
   },
   {
@@ -133,7 +131,6 @@
    "report": 1,
    "role": "Resident",
    "share": 1,
-   "submit": 1,
    "write": 1
   }
  ],

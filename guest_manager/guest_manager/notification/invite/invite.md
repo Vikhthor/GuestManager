@@ -1,0 +1,1 @@
+<p>{{ doc.title }} {{ doc.full_name }}</p>
