@@ -96,12 +96,12 @@
    "fieldname": "status",
    "fieldtype": "Select",
    "label": "Status",
-   "options": "Pending Invite\nInvite Sent"
+   "options": "\nPending Invite\nInvite Sent"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2021-02-21 13:12:32.895401",
+ "modified": "2021-02-24 08:49:50.009182",
  "modified_by": "Administrator",
  "module": "Guest Manager",
  "name": "Guests",
