@@ -8,7 +8,7 @@ import frappe
 from frappe.model.document import Document
 
 class Guests(Document):
-	def before_save(self):
+	def validate(self):
 		self.full_name = f'{self.guest_first_name} {self.guest_last_name or ""}'
 		# self.address = frappe.db.get_single_value('Resident','address')
 		if self.expected_arrival_time < frappe.utils.nowdate():
@@ -18,7 +18,8 @@ class Guests(Document):
 				frappe.throw('Arrival time should not be later than departure time')
 			if self.expected_arrival_time == self.expected_departure_time:
 				frappe.throw('Arrival time should not be same as departure time')
-	def on_submit(self):
+		
+	def before_save(self):
 		visit = frappe.new_doc('Visits')
 		# visit.resident = frappe.db.get_single_value('Resident','full_name')
 		visit.resident = self.resident
