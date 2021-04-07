@@ -1,0 +1,85 @@
+{
+ "actions": [],
+ "autoname": "format:{resource}-{DD}/{MM}/{YY}-{##}",
+ "creation": "2021-04-06 20:14:22.883421",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "resource",
+  "start_time",
+  "end_time",
+  "no_of_persons",
+  "capacity"
+ ],
+ "fields": [
+  {
+   "fieldname": "resource",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Resource",
+   "options": "Booking Resource",
+   "reqd": 1
+  },
+  {
+   "fieldname": "start_time",
+   "fieldtype": "Datetime",
+   "in_list_view": 1,
+   "label": "Start time",
+   "reqd": 1
+  },
+  {
+   "fieldname": "end_time",
+   "fieldtype": "Datetime",
+   "label": "End time"
+  },
+  {
+   "fieldname": "no_of_persons",
+   "fieldtype": "Int",
+   "label": "Number of persons"
+  },
+  {
+   "fetch_from": "resource.max_capacity",
+   "fieldname": "capacity",
+   "fieldtype": "Data",
+   "label": "Capacity",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2021-04-07 15:48:01.991999",
+ "modified_by": "Administrator",
+ "module": "Guest Manager",
+ "name": "Bookings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Guest",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}
