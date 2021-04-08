@@ -22,6 +22,9 @@ frappe.ui.form.on('Bulk Guest', {
 						email: values.email,
 						expected_arrival_time: frm.doc.expected_arrival_time
 					})
+					// Set resident value as read only in the child document grid
+					var resident_df = frappe.meta.get_docfield("Visit", "resident", frm.doc.name);
+					resident_df.read_only = 1;
 					frm.refresh_field("guests");
 					guest.hide();
 				}

@@ -10,26 +10,29 @@ def validate_booking(data, action='add'):
                 "message": "Resource does not exist",
             }
         resource = frappe.db.get_all('Booking Resource', filters={'resource_name': data.get('resource')},
-            fields=['name', 'max_capacity'])
+            fields=['name', 'max_capacity', 'concurrency'])
         overlap = []
         if action == 'add':
             overlap = frappe.db.get_all('Bookings', 
-                filters={'resource': data['resource'], 'start_time': ['<', data['end_time']], 'end_time': ['>', data['start_time']]},
+                filters={'resource': data['resource'], 'start_time': ['<=', data['start_time']], 'end_time': ['>', data['start_time']]}, 
                 fields=['no_of_persons'])
+            print(overlap)
+            if not bool(overlap):
+                overlap = frappe.db.get_all('Bookings',
+                    filters={'resource': data['resource'], 'start_time': ['<', data['end_time']], 'end_time': ['>=', data['end_time']]}, 
+                    fields=['no_of_persons'])
         elif action == 'update':
-            if data.get('start_time') and data.get('end_time'):
-                overlap = frappe.db.get_all('Bookings', 
-                    filters={'resource': data['resource'], 'name': ['!=', data['name']], 'start_time': ['<', data['end_time']], 'end_time': ['>', data['start_time']]},
-                    fields=['no_of_persons'])
-            if data.get('start_time') and not data.get('end_time'):
-                overlap = frappe.db.get_all('Bookings', 
-                    filters={'resource': data['resource'], 'name': ['!=', data['name']], 'end_time': ['>', data['start_time']]},
-                    fields=['no_of_persons'])
-            if data.get('end_time') and not data.get('start_time'):
-                overlap = frappe.db.get_all('Bookings', 
-                    filters={'resource': data['resource'], 'name': ['!=', data['name']], 'start_time': ['<', data['end_time']]},
-                    fields=['no_of_persons'])
-        if bool(overlap): 
+            if data.get('start_time') or data.get('end_time'):
+                if data.get('end_time'):
+                    overlap = frappe.db.get_all('Bookings', 
+                        filters={'resource': data['resource'], 'name': ['!=', data['name']], 'start_time': ['<', data['end_time']], 'end_time': ['>', data['end_time']]},
+                        fields=['no_of_persons'])
+                if not bool(overlap) and data.get('start_time'):
+                    overlap = frappe.db.get_all('Bookings', 
+                        filters={'resource': data['resource'], 'name': ['!=', data['name']], 'start_time': ['<', data['start_time']], 'end_time': ['>', data['start_time']]},
+                        fields=['no_of_persons'])
+        print(overlap)
+        if bool(overlap):
             if not resource[0].concurrency:
                 return {
                     "status": "failed",
@@ -38,7 +41,7 @@ def validate_booking(data, action='add'):
                 }
             existing_persons = 0
             for x in overlap:
-                existing_persons = existing_persons + overlap.no_of_persons
+                existing_persons = existing_persons + x.no_of_persons
             if action == 'add': 
                 if resource[0].max_capacity <= existing_persons + data['no_of_persons']:
                     return {
@@ -167,7 +170,7 @@ def add_booking():
         return {
             "status": "failed",
             "code": 400,
-            'message': "Something went wrong",
+            'message': "Something went wrong 1",
         }
 
 @frappe.whitelist(allow_guest=True)
