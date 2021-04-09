@@ -1,62 +1,82 @@
 import frappe
 import json
+from datetime import datetime
 
 def validate_booking(data, action='add'):
-    try:
-        if not frappe.db.exists({'doctype': 'Booking Resource', 'resource_name': data.get('resource')}):
+    #try:
+    if not frappe.db.exists({'doctype': 'Booking Resource', 'resource_name': data.get('resource')}):
+        return {
+            "status": "failed",
+            "code": 404,
+            "message": "Resource does not exist",
+        }
+    resource = frappe.db.get_all('Booking Resource', filters={'resource_name': data.get('resource')},
+        fields=['name', 'max_capacity', 'concurrency', 'opening_time', 'closing_time'])
+    opentime = datetime.strptime(str(resource[0].opening_time), "%H:%M:%S")
+    closetime = datetime.strptime(str(resource[0].closing_time), "%H:%M:%S")
+    overlap = []
+    if action == 'add':
+        bookStartDatetime = datetime.strptime(data.get('start_time'), '%Y-%m-%d %H:%M:%S')
+        bookStarttime = datetime.strptime(bookStartDatetime.strftime('%H:%M:%S'), "%H:%M:%S")
+        bookEndDatetime = datetime.strptime(data.get('end_time'), '%Y-%m-%d %H:%M:%S')
+        bookEndtime = datetime.strptime(bookEndDatetime.strftime('%H:%M:%S'), "%H:%M:%S")
+        if bookStarttime < opentime:
             return {
                 "status": "failed",
-                "code": 404,
-                "message": "Resource does not exist",
+                "code": 400,
+                "message": '{res} opens at {time}am'.format(res=resource[0].name, time=str(resource[0].opening_time)[:-3])
             }
-        resource = frappe.db.get_all('Booking Resource', filters={'resource_name': data.get('resource')},
-            fields=['name', 'max_capacity', 'concurrency'])
-        overlap = []
-        if action == 'add':
-            overlap = frappe.db.get_all('Bookings', 
-                filters={'resource': data['resource'], 'start_time': ['<=', data['start_time']], 'end_time': ['>', data['start_time']]}, 
+        if bookEndtime > closetime:
+            return {
+                "status": "failed",
+                "code": 400,
+                "message": '{res} closes at {time}pm'.format(res=resource[0].name, time=str(resource[0].closing_time)[:-3])
+            }
+        overlap = frappe.db.get_all('Bookings', 
+            filters={'resource': data['resource'], 'start_time': ['<=', data['start_time']], 'end_time': ['>', data['start_time']]}, 
+            fields=['no_of_persons'])
+        if not bool(overlap):
+            overlap = frappe.db.get_all('Bookings',
+                filters={'resource': data['resource'], 'start_time': ['<', data['end_time']], 'end_time': ['>=', data['end_time']]}, 
                 fields=['no_of_persons'])
-            if not bool(overlap):
-                overlap = frappe.db.get_all('Bookings',
-                    filters={'resource': data['resource'], 'start_time': ['<', data['end_time']], 'end_time': ['>=', data['end_time']]}, 
-                    fields=['no_of_persons'])
-        elif action == 'update':
-            if data.get('start_time') or data.get('end_time'):
-                if data.get('end_time'):
-                    overlap = frappe.db.get_all('Bookings', 
-                        filters={'resource': data['resource'], 'name': ['!=', data['name']], 'start_time': ['<', data['end_time']], 'end_time': ['>=', data['end_time']]},
-                        fields=['no_of_persons'])
-                if not bool(overlap) and data.get('start_time'):
-                    overlap = frappe.db.get_all('Bookings', 
-                        filters={'resource': data['resource'], 'name': ['!=', data['name']], 'start_time': ['<=', data['start_time']], 'end_time': ['>', data['start_time']]},
-                        fields=['no_of_persons'])
-        if bool(overlap):
-            if not resource[0].concurrency:
-                return {
-                    "status": "failed",
-                    "code": 400,
-                    "message": "Your time schedule for this resource may have an overlap. Please adjust your schedule",
-                }
-            existing_persons = 0
-            for x in overlap:
-                existing_persons = existing_persons + x.no_of_persons
-            if action == 'add': 
-                if resource[0].max_capacity <= existing_persons + data['no_of_persons']:
+    elif action == 'update':
+        if data.get('start_time') or data.get('end_time'):
+            if data.get('end_time'):
+                bookEndDatetime = datetime.strptime(data.get('end_time'), '%Y-%m-%d %H:%M:%S')
+                bookEndtime = datetime.strptime(bookEndDatetime.strftime('%H:%M:%S'), "%H:%M:%S")
+                if bookEndtime > closetime:
                     return {
                         "status": "failed",
                         "code": 400,
-                        "message": "Maximum resource capacity exceeded",
+                        "message": '{res} closes at {time}pm'.format(res=resource[0].name, time=str(resource[0].closing_time)[:-3])
                     }
-            if action == 'update':
-                if data.get('no_of_persons'):
-                    if resource[0].max_capacity <= existing_persons + data['no_of_persons']:
-                        return {
-                            "status": "failed",
-                            "code": 400,
-                            "message": "Maximum resource capacity exceeded",
-                        }
+                overlap = frappe.db.get_all('Bookings', 
+                    filters={'resource': data['resource'], 'name': ['!=', data['name']], 'start_time': ['<', data['end_time']], 'end_time': ['>=', data['end_time']]},
+                    fields=['no_of_persons'])
+            if not bool(overlap) and data.get('start_time'):
+                bookStartDatetime = datetime.strptime(data.get('start_time'), '%Y-%m-%d %H:%M:%S')
+                bookStarttime = datetime.strptime(bookStartDatetime.strftime('%H:%M:%S'), "%H:%M:%S")
+                if bookStarttime < opentime:
+                    return {
+                        "status": "failed",
+                        "code": 400,
+                        "message": '{res} opens at {time}am'.format(res=resource[0].name, time=str(resource[0].opening_time)[:-3])
+                    }
+                overlap = frappe.db.get_all('Bookings', 
+                    filters={'resource': data['resource'], 'name': ['!=', data['name']], 'start_time': ['<=', data['start_time']], 'end_time': ['>', data['start_time']]},
+                    fields=['no_of_persons'])
+    if bool(overlap):
+        if not resource[0].concurrency:
+            return {
+                "status": "failed",
+                "code": 400,
+                "message": "Your time schedule for this resource may have an overlap. Please adjust your schedule",
+            }
+        existing_persons = 0
+        for x in overlap:
+            existing_persons = existing_persons + x.no_of_persons
         if action == 'add': 
-            if resource[0].max_capacity <= data.get('no_of_persons'):
+            if resource[0].max_capacity <= existing_persons + data['no_of_persons']:
                 return {
                     "status": "failed",
                     "code": 400,
@@ -64,21 +84,36 @@ def validate_booking(data, action='add'):
                 }
         if action == 'update':
             if data.get('no_of_persons'):
-                if resource[0].max_capacity <= data.get('no_of_persons'):
+                if resource[0].max_capacity <= existing_persons + data['no_of_persons']:
                     return {
                         "status": "failed",
                         "code": 400,
                         "message": "Maximum resource capacity exceeded",
                     }
-        return {
-            "status": "success",
-        }
-    except:
-        return {
-            "status": "failed",
-            "code": 400,
-            'message': "Something went wrong",
-        }
+    if action == 'add': 
+        if resource[0].max_capacity <= data.get('no_of_persons'):
+            return {
+                "status": "failed",
+                "code": 400,
+                "message": "Maximum resource capacity exceeded",
+            }
+    if action == 'update':
+        if data.get('no_of_persons'):
+            if resource[0].max_capacity <= data.get('no_of_persons'):
+                return {
+                    "status": "failed",
+                    "code": 400,
+                    "message": "Maximum resource capacity exceeded",
+                }
+    return {
+        "status": "success",
+    }
+    #except:
+    #    return {
+    #        "status": "failed",
+    #        "code": 400,
+    #        'message': "Something went wrong",
+    #    }
 
 @frappe.whitelist(allow_guest=True)
 def get_todos():
@@ -143,33 +178,33 @@ def get_bookings():
 
 @frappe.whitelist(allow_guest=True)
 def add_booking():
-    try:
-        data = json.loads(frappe.request.data)
-        resource = frappe.db.get_all('Booking Resource', filters={'resource_name': data['resource']},
-                fields=['name', 'max_capacity'])
-        result = validate_booking(data)
-        if result["status"] == "failed":
-            return result
-        doc = frappe.new_doc('Bookings')
-        doc.resource = data['resource']
-        doc.start_time = data['start_time']
-        doc.end_time = data['end_time']
-        doc.no_of_persons = data['no_of_persons']
-        doc.capacity = resource[0].max_capacity
-        doc.insert()
-        print(doc)
-        return {
-            "status": "success",
-            "code": 200,
-            'message': "Your reservation has been booked successfully",
-            'data': doc,
-        }
-    except:
-        return {
-            "status": "failed",
-            "code": 400,
-            'message': "Something went wrong 1",
-        }
+    #try:
+    data = json.loads(frappe.request.data)
+    resource = frappe.db.get_all('Booking Resource', filters={'resource_name': data['resource']},
+            fields=['name', 'max_capacity'])
+    result = validate_booking(data)
+    if result["status"] == "failed":
+        return result
+    doc = frappe.new_doc('Bookings')
+    doc.resource = data['resource']
+    doc.start_time = data['start_time']
+    doc.end_time = data['end_time']
+    doc.no_of_persons = data['no_of_persons']
+    doc.capacity = resource[0].max_capacity
+    doc.insert()
+    print(doc)
+    return {
+        "status": "success",
+        "code": 200,
+        'message': "Your reservation has been booked successfully",
+        'data': doc,
+    }
+    #except:
+    #    return {
+    #        "status": "failed",
+    #        "code": 400,
+    #        'message': "Something went wrong 1",
+    #    }
 
 @frappe.whitelist(allow_guest=True)
 def remove_booking():
